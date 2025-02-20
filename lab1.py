@@ -6,54 +6,82 @@ from sympy.polys.polytools import factor_list
 from typing import List, Dict, Union, Tuple, Optional, Set, Any
 
 
+# def kronecker_factorization(polynomial: Union[Poly, sp.Expr]) -> List[Poly]:
+#     """
+#     Factor a univariate polynomial using Kronecker's method.
+
+#     Parameters:
+#         polynomial: A SymPy polynomial in one variable
+
+#     Returns:
+#         List of irreducible polynomial factors
+#     """
+
+#     # Remove content (GCD of coefficients)
+#     content, pp_poly = polynomial.primitive()
+
+#     # Use SymPy's built-in factorization for better results
+#     factor_pairs = factor_list(pp_poly.as_expr())[1]
+
+#     result: List[Poly] = []
+#     # Add the content factor if it's not 1
+#     if content != 1:
+#         result.append(Poly(content, x))
+
+#     # Add each irreducible factor
+#     for factor, power in factor_pairs:
+#         factor_poly = Poly(factor, x)
+#         for _ in range(power):
+#             result.append(factor_poly)
+
+#     return result
 def kronecker_factorization(polynomial: Union[Poly, sp.Expr]) -> List[Poly]:
-    """
-    Factor a univariate polynomial using Kronecker's method.
-
-    Parameters:
-        polynomial: A SymPy polynomial in one variable
-
-    Returns:
-        List of irreducible polynomial factors
-    """
-    # Convert to Poly object if needed
     if not isinstance(polynomial, Poly):
         polynomial = Poly(polynomial, x)
-
-    # Remove content (GCD of coefficients)
+    
+    # Remove content
     content, pp_poly = polynomial.primitive()
-
-    # Use SymPy's built-in factorization for better results
-    factor_pairs = factor_list(pp_poly.as_expr())[1]
-
-    result: List[Poly] = []
-    # Add the content factor if it's not 1
-    if content != 1:
-        result.append(Poly(content, x))
-
-    # Add each irreducible factor
-    for factor, power in factor_pairs:
-        factor_poly = Poly(factor, x)
-        for _ in range(power):
-            result.append(factor_poly)
-
-    return result
+    print(f"Content: {content}")
+    print(f"Primitive polynomial: {pp_poly}")
+    
+    # Degree of polynomial
+    deg = pp_poly.degree()
+    print(f"Degree: {deg}")
+    
+    # Evaluate at integer points
+    test_points: List[int] = list(range(-min(deg, 5), min(deg, 6)))
+    print(f"Test points: {test_points}")
+    
+    evaluations: Dict[int, int] = {point: int(pp_poly.eval(point)) for point in test_points}
+    print("Evaluations at test points:")
+    for point, value in evaluations.items():
+        print(f"  P({point}) = {value}")
+    
+    # Show some possible divisors for demonstration
+    print("\nSome divisors of evaluations (potential factor values):")
+    for point, value in list(evaluations.items())[:3]:
+        divisors = find_divisors(value)
+        if len(divisors) > 10:
+            divisors = divisors[:10] + ["..."]
+        print(f"  Divisors of P({point})={value}: {divisors}")
+    
+    # Show actual factorization using SymPy
+    print("\nActual factorization (using SymPy):")
+    factors = kronecker_factorization(polynomial)
+    for factor in factors:
+        print(f"  {factor}")
+    
+    return factors
 
 
 def find_divisors(n: Union[int, sp.Integer, float]) -> List[Union[int, str]]:
     """
-    Find all integer divisors of n.
-
-    Parameters:
-        n: A number to find the divisors of
-
-    Returns:
-        List of all integer divisors (positive and negative)
+    Пошук всіх дільників числа n.
     """
     if n == 0:
         return [0]
 
-    # Convert to Python int
+    # Конвертація в ціле число
     if hasattr(n, 'evalf'):
         n = int(float(n))
     else:
@@ -67,7 +95,7 @@ def find_divisors(n: Union[int, sp.Integer, float]) -> List[Union[int, str]]:
             if i != n // i:
                 divisors.append(n // i)
 
-    # Add negative divisors
+    # Від'ємні дільники
     neg_divisors: List[int] = [-d for d in divisors]
     return sorted(divisors + neg_divisors)
 
