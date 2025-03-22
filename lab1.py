@@ -128,12 +128,6 @@ def kroneckerFACTS(f: Poly):
 
 
 if __name__ == "__main__":
-    # print(interpol([0,1,2,3], [-2,4,5,3]))
-    # print(kronecker(Poly(2*x**5 + x**4 + x**2 +x +2)))
-    # print(kronecker(Poly(18*x**5 + 6*x**4 + 12*x**3 + 27*x**2 + 9*x + 18)))
-    #print(kroneckerIRR(Poly(x**7 + x**6 + x**5 + 2*x**4 + 2*x**3 + x**2 + x + 1)))
-    #print(kroneckerFACTS(Poly(x**7 + 2*x**6 + 2*x**5 + 3*x**4 + 3*x**3 + 2*x**2 + 2*x + 1)))
-
     polynomials = [Poly(14*x**4 - 46*x**3 - 82*x**2 + 138*x + 120),
                    Poly(x**4 + x**2 - 20)]
     for polynomial in polynomials:
@@ -149,4 +143,3 @@ if __name__ == "__main__":
             product_check = product_check * f[0] ** f[1]
         print("Перевірка множників: Добуток отриманих множників:", product_check)
         print("\n===================")
-    # print(kronecker(Poly(2*x**4 + 8)))
